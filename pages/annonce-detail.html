@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iPhone 13 Pro — LocalMarket</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --jaune: #FFD600;
+    --jaune-clair: #FFF176;
+    --noir: #0D0D0D;
+    --gris: #1A1A1A;
+    --gris-clair: #2A2A2A;
+    --blanc: #FAFAFA;
+    --text-muted: #888;
+    --vert: #4CAF50;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Outfit', sans-serif; background: var(--noir); color: var(--blanc); }
+
+  nav {
+    background: var(--noir);
+    border-bottom: 3px solid var(--jaune);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px; position: sticky; top: 0; z-index: 100;
+  }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--jaune); letter-spacing: 2px; text-decoration: none; }
+  .logo span { color: var(--blanc); }
+
+  .breadcrumb {
+    padding: 1rem 2rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--jaune); }
+  .breadcrumb span { color: var(--jaune); margin: 0 0.4rem; }
+
+  /* MAIN LAYOUT */
+  .detail-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media(max-width:750px) { .detail-wrapper { grid-template-columns: 1fr; } }
+
+  /* GALLERY */
+  .gallery-main {
+    background: var(--gris);
+    border: 2px solid var(--gris-clair);
+    border-radius: 14px;
+    height: 350px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 6rem;
+    margin-bottom: 0.8rem;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .gallery-thumbs {
+    display: flex;
+    gap: 0.7rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .thumb {
+    width: 70px; height: 70px;
+    background: var(--gris);
+    border: 2px solid var(--gris-clair);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .thumb.active { border-color: var(--jaune); }
+  .thumb:hover { border-color: var(--jaune); }
+
+  /* INFO CARD */
+  .info-card {
+    background: var(--gris);
+    border: 2px solid var(--gris-clair);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .badge-row { display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+
+  .badge {
+    background: var(--jaune);
+    color: var(--noir);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.7rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-green { background: var(--vert); color: white; }
+  .badge-outline { background: none; border: 1px solid var(--gris-clair); color: var(--text-muted); }
+
+  .annonce-title-big {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .price-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--jaune);
+    letter-spacing: 1px;
+    margin-bottom: 0.8rem;
+  }
+
+  .location-date {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .divider { border: none; border-top: 1px solid var(--gris-clair); margin: 1.2rem 0; }
+
+  /* DESCRIPTION */
+  .description-text {
+    color: #ccc;
+    line-height: 1.75;
+    font-size: 0.95rem;
+  }
+
+  /* FEATURES */
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .feature-item {
+    background: var(--gris-clair);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .feature-label { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 0.2rem; }
+  .feature-value { font-weight: 600; }
+
+  /* SIDEBAR */
+  .seller-card {
+    background: var(--gris);
+    border: 2px solid var(--gris-clair);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+    position: sticky;
+    top: 90px;
+  }
+
+  .seller-card-header {
+    background: var(--jaune);
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .seller-avatar {
+    width: 48px; height: 48px;
+    background: var(--noir);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .seller-name { font-weight: 700; color: var(--noir); font-size: 1rem; }
+  .seller-since { font-size: 0.78rem; color: var(--gris); }
+  .seller-stars { font-size: 0.85rem; color: var(--gris); }
+
+  .seller-card-body { padding: 1.2rem; }
+
+  .contact-btn {
+    display: block;
+    background: var(--jaune);
+    color: var(--noir);
+    text-align: center;
+    padding: 0.9rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    margin-bottom: 0.8rem;
+    transition: background 0.2s;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .contact-btn:hover { background: var(--jaune-clair); }
+
+  .whatsapp-btn {
+    display: block;
+    background: #25D366;
+    color: white;
+    text-align: center;
+    padding: 0.9rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    margin-bottom: 0.8rem;
+    transition: background 0.2s;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .whatsapp-btn:hover { background: #20bc5a; }
+
+  .call-btn {
+    display: block;
+    background: var(--gris-clair);
+    color: var(--blanc);
+    text-align: center;
+    padding: 0.9rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: border-color 0.2s;
+    border: 2px solid var(--gris-clair);
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .call-btn:hover { border-color: var(--jaune); color: var(--jaune); }
+
+  .safety-notice {
+    background: rgba(255,214,0,0.06);
+    border: 1px solid rgba(255,214,0,0.2);
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin-top: 1rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .safety-notice strong { color: var(--jaune); }
+
+  /* ACTION ROW */
+  .action-row {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+  }
+
+  .action-btn {
+    flex: 1;
+    background: var(--gris-clair);
+    border: 2px solid var(--gris-clair);
+    border-radius: 8px;
+    padding: 0.7rem;
+    color: var(--blanc);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  .action-btn:hover { border-color: var(--jaune); color: var(--jaune); }
+  .action-btn.liked { border-color: #ff4d4d; color: #ff4d4d; }
+
+  /* MESSAGE FORM */
+  .message-form {
+    background: var(--gris);
+    border: 2px solid var(--gris-clair);
+    border-radius: 14px;
+    padding: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .message-form h3 { font-size: 1rem; margin-bottom: 1rem; font-weight: 600; }
+
+  .message-form textarea {
+    width: 100%;
+    background: var(--gris-clair);
+    border: 2px solid var(--gris-clair);
+    border-radius: 8px;
+    padding: 0.8rem;
+    color: var(--blanc);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+  }
+
+  .message-form textarea:focus { border-color: var(--jaune); }
+
+  .quick-msgs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 0.7rem 0;
+  }
+
+  .quick-msg {
+    background: var(--gris-clair);
+    border: 1px solid var(--gris-clair);
+    border-radius: 20px;
+    padding: 0.35rem 0.8rem;
+    font-size: 0.78rem;
+    cursor: pointer;
+    color: var(--blanc);
+    transition: border-color 0.2s;
+  }
+
+  .quick-msg:hover { border-color: var(--jaune); color: var(--jaune); }
+
+  footer { background: #080808; border-top: 1px solid var(--gris-clair); padding: 1.2rem; text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--jaune); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Local<span>Market</span></a>
+  <span style="color: var(--text-muted); font-size: 0.9rem;">📍 Dakar, Sénégal</span>
+</nav>
+
+<div style="max-width:1100px;margin:0 auto;padding:0 2rem;">
+  <div class="breadcrumb">
+    <a href="index.html">Accueil</a><span>›</span>
+    <a href="annonces.html">Annonces</a><span>›</span>
+    <a href="#">Téléphones</a><span>›</span>
+    iPhone 13 Pro
+  </div>
+</div>
+
+<div class="detail-wrapper">
+
+  <!-- GAUCHE : PHOTOS + DESCRIPTION -->
+  <div>
+
+    <!-- GALERIE -->
+    <div class="gallery-main" id="main-photo">📱</div>
+
+    <div class="gallery-thumbs">
+      <div class="thumb active" onclick="selectThumb(this)">📱</div>
+      <div class="thumb" onclick="selectThumb(this)">🔋</div>
+      <div class="thumb" onclick="selectThumb(this)">📦</div>
+      <div class="thumb" onclick="selectThumb(this)">🎧</div>
+    </div>
+
+    <!-- INFO PRINCIPALE -->
+    <div class="info-card">
+      <div class="badge-row">
+        <span class="badge"> Téléphones</span>
+        <span class="badge badge-green">Très bon état</span>
+        <span class="badge-outline badge">Publié il y a 2h</span>
+      </div>
+
+      <h1 class="annonce-title-big">iPhone 13 Pro — 256 Go, Bleu Sierra</h1>
+
+      <div class="price-big">350 000 FCFA</div>
+
+      <div class="location-date">
+        <span> Dakar, Plateau</span>
+        <span>128 vues</span>
+        <span> Aujourd'hui à 10h32</span>
+      </div>
+
+      <hr class="divider">
+
+      <!-- FEATURES -->
+      <div class="features-grid">
+        <div class="feature-item">
+          <div class="feature-label">Marque</div>
+          <div class="feature-value">Apple</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-label">Modèle</div>
+          <div class="feature-value">iPhone 13 Pro</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-label">Stockage</div>
+          <div class="feature-value">256 Go</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-label">Couleur</div>
+          <div class="feature-value">Bleu Sierra</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-label">État de la batterie</div>
+          <div class="feature-value">89%</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-label">Réseau</div>
+          <div class="feature-value">Débloqué tous opérateurs</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- DESCRIPTION -->
+      <h3 style="margin-bottom: 0.8rem; font-size: 1rem;">Description</h3>
+      <p class="description-text">
+        Je vends mon iPhone 13 Pro 256 Go en très bon état. L'écran est parfait, sans rayure ni impact. Le téléphone fonctionne à 100%, pas de problème de batterie ni de signal.
+        <br><br>
+        Vendu avec la boîte d'origine, le câble USB-C Lightning et les écouteurs Apple EarPods. Acheté en novembre 2022. Je vends car j'ai changé de téléphone.
+        <br><br>
+        Sérieux uniquement. Pas d'échange. Paiement en espèces à la remise en main propre à Dakar Plateau ou livraison possible (+2000 FCFA).
+      </p>
+
+      <hr class="divider">
+
+      <!-- ACTIONS -->
+      <div class="action-row">
+        <button class="action-btn" id="like-btn" onclick="toggleLike()"> Sauvegarder</button>
+        <button class="action-btn" onclick="share()"> Partager</button>
+        <button class="action-btn" style="color: var(--text-muted);" onclick="report()"> Signaler</button>
+      </div>
+
+    </div>
+
+    <!-- MESSAGE FORM -->
+    <div class="message-form">
+      <h3> Envoyer un message au vendeur</h3>
+      <textarea id="msg-textarea" placeholder="Bonjour, votre annonce m'intéresse. Est-il toujours disponible ?"></textarea>
+      <div class="quick-msgs">
+        <span class="quick-msg" onclick="setMsg('Bonjour, est-il toujours disponible ?')">Toujours dispo ?</span>
+        <span class="quick-msg" onclick="setMsg('Quel est votre prix final ?')">Prix final ?</span>
+        <span class="quick-msg" onclick="setMsg('Livraison possible à Dakar ?')">Livraison ?</span>
+        <span class="quick-msg" onclick="setMsg('Je suis intéressé(e), quand peut-on se rencontrer ?')">Se rencontrer ?</span>
+      </div>
+      <button class="contact-btn" onclick="sendMsg()" style="margin-bottom:0;">📨 Envoyer le message</button>
+    </div>
+
+  </div>
+
+  <!-- DROITE : CONTACT VENDEUR -->
+  <div>
+    <div class="seller-card">
+      <div class="seller-card-header">
+        <div class="seller-avatar">👤</div>
+        <div>
+          <div class="seller-name">Moussa Diallo</div>
+          <div class="seller-since">⭐⭐⭐⭐⭐ · 4.9 (23 avis)</div>
+          <div class="seller-stars">Membre depuis Mars 2023</div>
+        </div>
+      </div>
+      <div class="seller-card-body">
+
+        <button class="whatsapp-btn"> WhatsApp — +221 77 000 00 00</button>
+        <button class="call-btn" onclick="callSeller()"> Appeler le vendeur</button>
+
+        <div class="safety-notice">
+          <strong> Conseils de sécurité :</strong> Ne payez jamais à l'avance. Rencontrez le vendeur dans un lieu public. Vérifiez le produit avant d'acheter.
+        </div>
+
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gris-clair);">
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600;">Autres annonces de Moussa</div>
+          <a href="#" style="color: var(--blanc); text-decoration:none; font-size: 0.85rem; display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--gris-clair);">
+            <span>Samsung Galaxy A53</span>
+            <span style="color: var(--jaune); font-weight: 700;">120 000 FCFA</span>
+          </a>
+          <a href="#" style="color: var(--blanc); text-decoration:none; font-size: 0.85rem; display: flex; justify-content: space-between; padding: 0.5rem 0;">
+            <span>Airpods Pro 2ème gen</span>
+            <span style="color: var(--jaune); font-weight: 700;">85 000 FCFA</span>
+          </a>
+          <a href="annonces.html" style="color: var(--jaune); text-decoration: none; font-size: 0.82rem; display: block; margin-top: 0.5rem;">Voir toutes ses annonces →</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  © 2025 <a href="index.html">LocalMarket</a> · Tous droits réservés
+</footer>
+
+<script>
+  function selectThumb(el) {
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function toggleLike() {
+    const btn = document.getElementById('like-btn');
+    btn.classList.toggle('liked');
+    btn.textContent = btn.classList.contains('liked') ? ' Sauvegardé !' : ' Sauvegarder';
+  }
+
+  function share() {
+    if (navigator.share) {
+      navigator.share({ title: 'iPhone 13 Pro', url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('🔗 Lien copié !');
+    }
+  }
+
+  function report() {
+    alert(' Merci. Cette annonce a été signalée à notre équipe.');
+  }
+
+  function callSeller() {
+    alert(' Numéro : +228 77 00 00 00');
+  }
+
+  function setMsg(text) {
+    document.getElementById('msg-textarea').value = text;
+  }
+
+  function sendMsg() {
+    const msg = document.getElementById('msg-textarea').value.trim();
+    if (!msg) { alert('Veuillez écrire un message.'); return; }
+    alert(' Message envoyé ! Moussa vous répondra bientôt.');
+    document.getElementById('msg-textarea').value = '';
+  }
+</script>
+
+</body>
+</html>

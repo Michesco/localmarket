@@ -1,0 +1,30 @@
+<!--
+  ============================================
+  COMPOSANT : Navbar
+  Usage : copier ce bloc dans chaque page HTML
+  Adapter les liens selon la profondeur du fichier :
+    - Depuis index.html      → href="pages/xxx.html"
+    - Depuis pages/xxx.html  → href="../index.html" ou href="xxx.html"
+  ============================================
+-->
+
+<nav class="navbar">
+  <a href="../index.html" class="navbar-logo">Local<span>Market</span></a>
+
+  <!-- Hamburger mobile -->
+  <button class="navbar-toggle" aria-label="Ouvrir le menu" onclick="this.nextElementSibling.classList.toggle('open')">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <ul class="navbar-menu">
+    <li><a href="annonces.html">Annonces</a></li>
+    <li><a href="publier.html">+ Publier</a></li>
+    <!-- Si connecté : afficher "Mon compte" -->
+    <li class="hide-if-logged-out"><a href="mon-compte.html">Mon compte</a></li>
+    <!-- Si non connecté : afficher Connexion / Inscription -->
+    <li class="hide-if-logged-in"><a href="connexion.html" class="btn btn-outline">Connexion</a></li>
+    <li class="hide-if-logged-in"><a href="inscription.html" class="btn">Inscription</a></li>
+  </ul>
+</nav>

@@ -1,0 +1,163 @@
+<!--
+  ============================================
+  COMPOSANT : Carte d'annonce
+  Usage : copier ce bloc pour afficher une annonce
+  En PHP, générer dynamiquement avec une boucle
+  ============================================
+-->
+
+<!-- EXEMPLE STATIQUE (copier-coller) -->
+<a href="annonce-detail.html?id=1" class="annonce-card">
+  <div class="annonce-card__img">
+    <!-- Remplacer l'emoji par une vraie image si disponible -->
+    <img src="../assets/images/placeholder.png" alt="Photo du produit" onerror="this.parentElement.innerHTML='📦'">
+    <!-- Badge favori -->
+    <button class="annonce-card__fav" onclick="toggleFav(event, 1)" title="Sauvegarder">♡</button>
+  </div>
+  <div class="annonce-card__body">
+    <span class="badge badge-yellow annonce-card__cat">📱 Téléphone</span>
+    <h3 class="annonce-card__title">iPhone 13 Pro 256 Go — Bleu</h3>
+    <div class="annonce-card__price">350 000 FCFA</div>
+    <div class="annonce-card__footer">
+      <span class="annonce-card__location">📍 Dakar</span>
+      <span class="annonce-card__date">il y a 2h</span>
+    </div>
+  </div>
+</a>
+
+<!--
+  ============================================
+  EXEMPLE PHP DYNAMIQUE
+  ============================================
+  <?php foreach ($annonces as $a): ?>
+  <a href="annonce-detail.php?id=<?= $a['id'] ?>" class="annonce-card">
+    <div class="annonce-card__img">
+      <?php if ($a['photo']): ?>
+        <img src="<?= htmlspecialchars($a['photo']) ?>" alt="<?= htmlspecialchars($a['titre']) ?>">
+      <?php else: ?>
+        <?= $a['icone'] ?? '📦' ?>
+      <?php endif; ?>
+      <button class="annonce-card__fav" onclick="toggleFav(event, <?= $a['id'] ?>)">♡</button>
+    </div>
+    <div class="annonce-card__body">
+      <span class="badge badge-yellow annonce-card__cat"><?= htmlspecialchars($a['categorie']) ?></span>
+      <h3 class="annonce-card__title"><?= htmlspecialchars($a['titre']) ?></h3>
+      <div class="annonce-card__price">
+        <?php if ($a['est_gratuit']): ?>
+          <span style="color: var(--vert);">GRATUIT</span>
+        <?php else: ?>
+          <?= number_format($a['prix'], 0, ',', ' ') ?> FCFA
+        <?php endif; ?>
+      </div>
+      <div class="annonce-card__footer">
+        <span class="annonce-card__location">📍 <?= htmlspecialchars($a['ville']) ?></span>
+        <span class="annonce-card__date"><?= timeAgo($a['created_at']) ?></span>
+      </div>
+    </div>
+  </a>
+  <?php endforeach; ?>
+-->
+
+<style>
+/* --- CARD STYLES --- */
+.annonce-card {
+  background: var(--gris);
+  border: 2px solid var(--gris-clair);
+  border-radius: 12px;
+  overflow: hidden;
+  display: block;
+  color: var(--blanc);
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.2s;
+  position: relative;
+}
+.annonce-card:hover {
+  border-color: var(--jaune);
+  transform: translateY(-4px);
+}
+
+.annonce-card__img {
+  width: 100%;
+  height: 175px;
+  background: var(--gris-clair);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+.annonce-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Bouton favori */
+.annonce-card__fav {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.6);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--blanc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, color 0.2s;
+  backdrop-filter: blur(4px);
+}
+.annonce-card__fav:hover      { background: rgba(255,77,77,0.8); color: white; }
+.annonce-card__fav.saved      { background: rgba(255,77,77,0.9); color: white; }
+
+.annonce-card__body   { padding: 1rem; }
+.annonce-card__cat    { margin-bottom: 0.5rem; }
+.annonce-card__title  { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.4rem; line-height: 1.3; }
+.annonce-card__price  { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--jaune); letter-spacing: 1px; }
+
+.annonce-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--gris-clair);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Grille d'annonces */
+.annonces-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1.2rem;
+}
+
+@media (max-width: 480px) {
+  .annonces-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .annonce-card__img { height: 130px; }
+}
+</style>
+
+<script>
+/**
+ * Basculer l'état favori d'une annonce
+ * @param {Event} e     - Événement click (stopPropagation pour ne pas ouvrir la page)
+ * @param {number} id   - ID de l'annonce
+ */
+function toggleFav(e, id) {
+  e.preventDefault();
+  e.stopPropagation();
+  const btn    = e.currentTarget;
+  const isSaved = btn.classList.toggle('saved');
+  btn.textContent = isSaved ? '♥' : '♡';
+  if (typeof Favorites !== 'undefined') {
+    Favorites.toggle(String(id));
+  }
+}
+</script>

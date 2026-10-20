@@ -1,0 +1,136 @@
+<!--
+  ============================================
+  COMPOSANT : Footer
+  Usage : copier ce bloc en bas de chaque page
+  ============================================
+-->
+
+<footer class="footer">
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="../index.html" class="footer-logo">Local<span>Market</span></a>
+      <p>La plateforme simple pour acheter et vendre près de chez vous. Gratuit, rapide, local.</p>
+    </div>
+
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="../index.html">Accueil</a></li>
+          <li><a href="annonces.html">Toutes les annonces</a></li>
+          <li><a href="publier.html">Publier une annonce</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Catégories</h4>
+        <ul>
+          <li><a href="annonces.html?cat=telephones">📱 Téléphones</a></li>
+          <li><a href="annonces.html?cat=immobilier">🏠 Immobilier</a></li>
+          <li><a href="annonces.html?cat=motos">🏍️ Motos</a></li>
+          <li><a href="annonces.html?cat=informatique">💻 Informatique</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Compte</h4>
+        <ul>
+          <li><a href="inscription.html">Créer un compte</a></li>
+          <li><a href="connexion.html">Se connecter</a></li>
+          <li><a href="mon-compte.html">Mes annonces</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2025 <strong>LocalMarket</strong>. Tous droits réservés.</span>
+    <div class="footer-legal">
+      <a href="#">Conditions d'utilisation</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+/* --- FOOTER STYLES --- */
+.footer {
+  background: #080808;
+  border-top: 3px solid var(--jaune);
+  margin-top: 4rem;
+  font-family: 'Outfit', sans-serif;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 2rem 2rem;
+}
+
+.footer-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  color: var(--jaune);
+  letter-spacing: 2px;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.8rem;
+}
+.footer-logo span { color: var(--blanc); }
+
+.footer-brand p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.footer-col h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  color: var(--jaune);
+  margin-bottom: 0.8rem;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 0.5rem; }
+.footer-col a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--blanc); }
+
+.footer-bottom {
+  border-top: 1px solid var(--gris-clair);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.2rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.footer-legal { display: flex; gap: 1.5rem; }
+.footer-legal a { color: var(--text-muted); text-decoration: none; }
+.footer-legal a:hover { color: var(--jaune); }
+
+@media (max-width: 768px) {
+  .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+  .footer-links { grid-template-columns: 1fr 1fr; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+}
+</style>

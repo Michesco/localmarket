@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion — LocalMarket</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --jaune: #FFD600;
+    --jaune-clair: #FFF176;
+    --noir: #0D0D0D;
+    --gris: #1A1A1A;
+    --gris-clair: #2A2A2A;
+    --blanc: #FAFAFA;
+    --text-muted: #888;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Outfit', sans-serif; background: var(--noir); color: var(--blanc); min-height: 100vh; display: flex; flex-direction: column; }
+
+  nav {
+    background: var(--noir);
+    border-bottom: 3px solid var(--jaune);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px;
+  }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--jaune); letter-spacing: 2px; text-decoration: none; }
+  .logo span { color: var(--blanc); }
+
+  .auth-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+  }
+
+  .auth-box {
+    background: var(--gris);
+    border: 2px solid var(--gris-clair);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
+  }
+
+  .auth-header {
+    background: var(--jaune);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .auth-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--noir); letter-spacing: 2px; }
+  .auth-header p { color: var(--gris); font-size: 0.9rem; margin-top: 0.3rem; }
+
+  .auth-body { padding: 2rem; }
+
+  .form-group { margin-bottom: 1.3rem; }
+
+  label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; }
+
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    background: var(--gris-clair);
+    border: 2px solid var(--gris-clair);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    color: var(--blanc);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input:focus { border-color: var(--jaune); }
+  input::placeholder { color: var(--text-muted); }
+
+  .forgot-link {
+    text-align: right;
+    margin-top: 0.4rem;
+    font-size: 0.82rem;
+  }
+  .forgot-link a { color: var(--jaune); text-decoration: none; }
+
+  .btn-submit {
+    background: var(--jaune);
+    color: var(--noir);
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+  }
+  .btn-submit:hover { background: var(--jaune-clair); }
+
+  .divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; color: var(--text-muted); font-size: 0.85rem; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gris-clair); }
+
+  .social-btn {
+    background: var(--gris-clair);
+    color: var(--blanc);
+    border: 2px solid var(--gris-clair);
+    border-radius: 8px;
+    padding: 0.75rem;
+    display: flex; align-items: center; justify-content: center; gap: 0.7rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    width: 100%;
+    margin-bottom: 0.8rem;
+  }
+  .social-btn:hover { border-color: var(--jaune); }
+
+  .auth-footer { text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gris-clair); color: var(--text-muted); font-size: 0.9rem; }
+  .auth-footer a { color: var(--jaune); text-decoration: none; font-weight: 600; }
+
+  footer { background: #080808; border-top: 1px solid var(--gris-clair); padding: 1.2rem; text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--jaune); text-decoration: none; }
+
+  .error-msg { background: rgba(255,77,77,0.1); border: 1px solid #ff4d4d; border-radius: 6px; padding: 0.7rem 1rem; font-size: 0.85rem; color: #ff4d4d; margin-bottom: 1rem; display: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Local<span>Market</span></a>
+  <span style="color: var(--text-muted); font-size: 0.9rem;">Pas encore membre ? <a href="inscription.html" style="color: var(--jaune); text-decoration: none; font-weight: 600;">Créer un compte</a></span>
+</nav>
+
+<div class="auth-wrapper">
+  <div class="auth-box">
+    <div class="auth-header">
+      <h1>Connexion</h1>
+      <p>Bon retour sur LocalMarket </p>
+    </div>
+    <div class="auth-body">
+
+      <div class="divider">ou avec votre email</div>
+
+      <div class="error-msg" id="error-msg"> Email ou mot de passe incorrect. Veuillez réessayer.</div>
+
+      <div class="form-group">
+        <label>Adresse email</label>
+        <input type="email" id="email" placeholder="ablavi@exemple.com">
+      </div>
+
+      <div class="form-group">
+        <label>Mot de passe</label>
+        <input type="password" id="password" placeholder="••••••••">
+        <div class="forgot-link"><a href="#">Mot de passe oublié ?</a></div>
+      </div>
+
+      <button class="btn-submit" onclick="handleLogin()">Se connecter</button>
+
+      <div class="auth-footer">
+        Pas encore de compte ? <a href="inscription.html">S'inscrire gratuitement</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2025 <a href="index.html">LocalMarket</a> · Tous droits réservés
+</footer>
+
+<script>
+  function handleLogin() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const error = document.getElementById('error-msg');
+
+    if (!email || !password) {
+      error.style.display = 'block';
+      error.textContent = '⚠️ Veuillez remplir tous les champs.';
+      return;
+    }
+
+    if (email === 'demo@localmarket.com' && password === '123456') {
+      document.querySelector('.btn-submit').textContent = '✅ Connexion réussie !';
+      document.querySelector('.btn-submit').style.background = '#4CAF50';
+      setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+    } else {
+      error.style.display = 'block';
+      error.textContent = '❌ Email ou mot de passe incorrect. (Démo: demo@localmarket.com / 123456)';
+    }
+  }
+
+  document.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleLogin();
+  });
+</script>
+
+</body>
+</html>

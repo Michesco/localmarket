@@ -1,0 +1,147 @@
+<!--
+  ============================================
+  COMPOSANT : Grille de catégories
+  Usage : section d'accueil ou barre de filtres
+  ============================================
+-->
+
+<section class="categories-section">
+  <h2 class="section-title">Catégories</h2>
+
+  <div class="cat-grid">
+    <a href="pages/annonces.html?cat=telephones" class="cat-card">
+      <div class="cat-card__icon">📱</div>
+      <div class="cat-card__name">Téléphones</div>
+      <div class="cat-card__count">1 240 annonces</div>
+    </a>
+    <a href="pages/annonces.html?cat=immobilier" class="cat-card">
+      <div class="cat-card__icon">🏠</div>
+      <div class="cat-card__name">Immobilier</div>
+      <div class="cat-card__count">890 annonces</div>
+    </a>
+    <a href="pages/annonces.html?cat=motos" class="cat-card">
+      <div class="cat-card__icon">🏍️</div>
+      <div class="cat-card__name">Motos</div>
+      <div class="cat-card__count">430 annonces</div>
+    </a>
+    <a href="pages/annonces.html?cat=informatique" class="cat-card">
+      <div class="cat-card__icon">💻</div>
+      <div class="cat-card__name">Informatique</div>
+      <div class="cat-card__count">670 annonces</div>
+    </a>
+    <a href="pages/annonces.html?cat=voitures" class="cat-card">
+      <div class="cat-card__icon">🚗</div>
+      <div class="cat-card__name">Voitures</div>
+      <div class="cat-card__count">980 annonces</div>
+    </a>
+    <a href="pages/annonces.html?cat=emploi" class="cat-card">
+      <div class="cat-card__icon">👔</div>
+      <div class="cat-card__name">Emploi</div>
+      <div class="cat-card__count">320 annonces</div>
+    </a>
+    <a href="pages/annonces.html?cat=meubles" class="cat-card">
+      <div class="cat-card__icon">🛋️</div>
+      <div class="cat-card__name">Meubles</div>
+      <div class="cat-card__count">540 annonces</div>
+    </a>
+    <a href="pages/annonces.html?cat=vetements" class="cat-card">
+      <div class="cat-card__icon">👗</div>
+      <div class="cat-card__name">Vêtements</div>
+      <div class="cat-card__count">1 100 annonces</div>
+    </a>
+    <a href="pages/annonces.html?cat=jeux" class="cat-card">
+      <div class="cat-card__icon">🎮</div>
+      <div class="cat-card__name">Jeux & Loisirs</div>
+      <div class="cat-card__count">390 annonces</div>
+    </a>
+    <a href="pages/annonces.html?cat=electromenager" class="cat-card">
+      <div class="cat-card__icon">🍳</div>
+      <div class="cat-card__name">Électroménager</div>
+      <div class="cat-card__count">280 annonces</div>
+    </a>
+    <a href="pages/annonces.html" class="cat-card cat-card--all">
+      <div class="cat-card__icon">📦</div>
+      <div class="cat-card__name">Voir tout</div>
+      <div class="cat-card__count">12 480 annonces</div>
+    </a>
+  </div>
+</section>
+
+<!--
+  ============================================
+  PHP DYNAMIQUE — générer depuis la BDD
+  ============================================
+  <?php
+  $cats = $db->query('SELECT * FROM categories ORDER BY nom')->fetchAll();
+  foreach ($cats as $cat):
+  ?>
+  <a href="annonces.php?cat=<?= $cat['slug'] ?>" class="cat-card">
+    <div class="cat-card__icon"><?= $cat['icone'] ?></div>
+    <div class="cat-card__name"><?= htmlspecialchars($cat['nom']) ?></div>
+    <div class="cat-card__count"><?= $cat['nb_annonces'] ?> annonces</div>
+  </a>
+  <?php endforeach; ?>
+-->
+
+<style>
+/* --- CATEGORIES STYLES --- */
+.categories-section { padding: 3rem 0; }
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.cat-card {
+  background: var(--gris);
+  border: 2px solid var(--gris-clair);
+  border-radius: 12px;
+  padding: 1.4rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--blanc);
+  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+  display: block;
+}
+.cat-card:hover {
+  border-color: var(--jaune);
+  background: rgba(255, 214, 0, 0.04);
+  transform: translateY(-3px);
+}
+.cat-card--all { border-style: dashed; }
+.cat-card--all:hover { border-style: solid; }
+
+.cat-card__icon  { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.cat-card__name  { font-weight: 600; font-size: 0.85rem; }
+.cat-card__count { color: var(--text-muted); font-size: 0.75rem; margin-top: 0.2rem; }
+
+/* Active state (catégorie sélectionnée) */
+.cat-card.active {
+  border-color: var(--jaune);
+  background: rgba(255, 214, 0, 0.08);
+}
+.cat-card.active .cat-card__name  { color: var(--jaune); }
+
+@media (max-width: 480px) {
+  .cat-grid { grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+  .cat-card  { padding: 1rem 0.5rem; }
+  .cat-card__icon { font-size: 1.8rem; }
+}
+</style>
+
+<script>
+// Marquer la catégorie active selon l'URL
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const current = params.get('cat');
+  if (current) {
+    document.querySelectorAll('.cat-card').forEach(card => {
+      if (card.href && card.href.includes('cat=' + current)) {
+        card.classList.add('active');
+      }
+    });
+  }
+});
+</script>

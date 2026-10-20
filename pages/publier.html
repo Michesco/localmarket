@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publier une annonce — LocalMarket</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --jaune: #FFD600;
+    --jaune-clair: #FFF176;
+    --noir: #0D0D0D;
+    --gris: #1A1A1A;
+    --gris-clair: #2A2A2A;
+    --blanc: #FAFAFA;
+    --text-muted: #888;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Outfit', sans-serif; background: var(--noir); color: var(--blanc); min-height: 100vh; }
+
+  nav {
+    background: var(--noir);
+    border-bottom: 3px solid var(--jaune);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px; position: sticky; top: 0; z-index: 100;
+  }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--jaune); letter-spacing: 2px; text-decoration: none; }
+  .logo span { color: var(--blanc); }
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+  .btn { background: var(--jaune); color: var(--noir); padding: 0.6rem 1.4rem; border-radius: 6px; font-weight: 700; font-family: 'Outfit', sans-serif; font-size: 0.9rem; text-decoration: none; border: none; cursor: pointer; transition: background 0.2s; display: inline-block; }
+  .btn:hover { background: var(--jaune-clair); }
+  .btn-ghost { background: none; color: var(--blanc); border: 2px solid var(--gris-clair); border-radius: 6px; padding: 0.5rem 1.2rem; font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; text-decoration: none; }
+  .btn-ghost:hover { border-color: var(--jaune); color: var(--jaune); }
+
+  /* STEPS */
+  .steps-bar {
+    background: var(--gris);
+    border-bottom: 2px solid var(--gris-clair);
+    padding: 1.2rem 2rem;
+  }
+
+  .steps {
+    display: flex;
+    align-items: center;
+    max-width: 700px;
+    margin: 0 auto;
+    gap: 0;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: 1;
+  }
+
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--gris-clair);
+    border: 2px solid var(--gris-clair);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem;
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .step.active .step-num { background: var(--jaune); border-color: var(--jaune); color: var(--noir); }
+  .step.done .step-num { background: #4CAF50; border-color: #4CAF50; color: white; }
+
+  .step-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+  .step.active .step-label { color: var(--blanc); }
+  .step.done .step-label { color: #4CAF50; }
+
+  .step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--gris-clair);
+    margin: 0 0.5rem;
+  }
+
+  /* MAIN LAYOUT */
+  .publish-wrapper {
+    max-width: 900px;
+    margin: 2.5rem auto;
+    padding: 0 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (max-width: 700px) {
+    .publish-wrapper { grid-template-columns: 1fr; }
+    .preview-box { display: none; }
+  }
+
+  /* FORM */
+  .form-card {
+    background: var(--gris);
+    border: 2px solid var(--gris-clair);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .form-card-header {
+    background: var(--jaune);
+    padding: 1.2rem 1.5rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+
+  .form-card-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: var(--noir);
+    letter-spacing: 1px;
+  }
+
+  .form-card-body { padding: 1.8rem 1.5rem; }
+
+  .form-group { margin-bottom: 1.5rem; }
+
+  label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  label span { color: var(--jaune); }
+  .label-hint { font-weight: 400; color: var(--text-muted); font-size: 0.8rem; margin-left: 0.4rem; }
+
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="tel"],
+  select,
+  textarea {
+    width: 100%;
+    background: var(--gris-clair);
+    border: 2px solid var(--gris-clair);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    color: var(--blanc);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input:focus, select:focus, textarea:focus { border-color: var(--jaune); }
+  input::placeholder, textarea::placeholder { color: var(--text-muted); }
+
+  textarea { resize: vertical; min-height: 130px; line-height: 1.6; }
+
+  select option { background: var(--gris-clair); }
+
+  .char-count { text-align: right; font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+  /* PHOTO UPLOAD */
+  .photo-upload-area {
+    border: 2px dashed var(--gris-clair);
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .photo-upload-area:hover { border-color: var(--jaune); background: rgba(255,214,0,0.03); }
+
+  .photo-upload-area input { display: none; }
+
+  .upload-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+  .upload-title { font-weight: 600; margin-bottom: 0.3rem; }
+  .upload-sub { font-size: 0.82rem; color: var(--text-muted); }
+
+  .photo-previews {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+
+  .photo-thumb {
+    aspect-ratio: 1;
+    background: var(--gris-clair);
+    border-radius: 8px;
+    border: 2px solid var(--gris-clair);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .photo-thumb.has-image { border-color: var(--jaune); }
+
+  .photo-thumb .remove {
+    position: absolute;
+    top: 3px; right: 3px;
+    background: var(--rouge, #ff4d4d);
+    border: none;
+    border-radius: 50%;
+    width: 20px; height: 20px;
+    cursor: pointer;
+    font-size: 0.65rem;
+    display: none;
+    color: white;
+    font-weight: bold;
+  }
+
+  .photo-thumb:hover .remove { display: flex; align-items: center; justify-content: center; }
+
+  /* PRICE ROW */
+  .price-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.8rem;
+    align-items: start;
+  }
+
+  .gratuit-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--gris-clair);
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid var(--gris-clair);
+    transition: border-color 0.2s;
+    white-space: nowrap;
+  }
+
+  .gratuit-toggle:hover { border-color: var(--jaune); }
+
+  .gratuit-toggle input { accent-color: var(--jaune); width: 16px; height: 16px; }
+
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  /* ACTION BUTTONS */
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .btn-submit {
+    background: var(--jaune);
+    color: var(--noir);
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-submit:hover { background: var(--jaune-clair); }
+
+  /* PREVIEW CARD */
+  .preview-box {
+    background: var(--gris);
+    border: 2px solid var(--gris-clair);
+    border-radius: 14px;
+    overflow: hidden;
+    position: sticky;
+    top: 90px;
+  }
+
+  .preview-header {
+    background: var(--gris-clair);
+    padding: 0.8rem 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .preview-body { padding: 1rem; }
+
+  .preview-img {
+    width: 100%;
+    height: 160px;
+    background: var(--gris-clair);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .preview-badge {
+    background: var(--jaune);
+    color: var(--noir);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  .preview-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.3rem; }
+  .preview-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--jaune); letter-spacing: 1px; }
+  .preview-info { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.6rem; }
+
+  .tips-box {
+    background: rgba(255,214,0,0.07);
+    border: 1px solid rgba(255,214,0,0.2);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1.2rem;
+  }
+
+  .tips-box h4 { font-size: 0.85rem; color: var(--jaune); margin-bottom: 0.6rem; font-weight: 700; }
+  .tips-box ul { list-style: none; }
+  .tips-box li { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; padding-left: 1rem; position: relative; }
+  .tips-box li::before { content: '✓'; color: var(--jaune); position: absolute; left: 0; font-weight: 700; }
+
+  footer { background: #080808; border-top: 1px solid var(--gris-clair); padding: 1.2rem; text-align: center; color: var(--text-muted); font-size: 0.8rem; }
+  footer a { color: var(--jaune); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Local<span>Market</span></a>
+  <div class="nav-right">
+    <a href="index.html" class="btn-ghost">← Retour</a>
+    <a href="connexion.html" class="btn">Mon compte</a>
+  </div>
+</nav>
+
+<!-- STEPS -->
+<div class="steps-bar">
+  <div class="steps">
+    <div class="step active">
+      <div class="step-num">1</div>
+      <div class="step-label">Informations</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-label">Photos</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-label">Contact</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-label">Publier</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="publish-wrapper">
+
+  <!-- FORM -->
+  <div>
+
+    <!-- SECTION 1: CATÉGORIE & TITRE -->
+    <div class="form-card" style="margin-bottom: 1.5rem;">
+      <div class="form-card-header">
+        <span style="font-size:1.2rem;">📝</span>
+        <h2>Votre annonce</h2>
+      </div>
+      <div class="form-card-body">
+
+        <div class="form-group">
+          <label>Catégorie <span>*</span></label>
+          <select id="cat-select">
+            <option value="">-- Choisissez une catégorie --</option>
+            <option>📱 Téléphones & Accessoires</option>
+            <option>💻 Informatique</option>
+            <option>🏠 Immobilier — Location</option>
+            <option>🏠 Immobilier — Vente</option>
+            <option>🏍️ Motos & Scooters</option>
+            <option>🚗 Voitures</option>
+            <option>👔 Emploi & Services</option>
+            <option>🛋️ Meubles & Décoration</option>
+            <option>👗 Vêtements & Mode</option>
+            <option>🎮 Jeux & Loisirs</option>
+            <option>🍳 Électroménager</option>
+            <option>📦 Autres</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Titre de l'annonce <span>*</span> <span class="label-hint">Soyez précis et clair</span></label>
+          <input type="text" id="title-input" placeholder="Ex: iPhone 13 Pro 256 Go — Bleu sierra, très bon état" maxlength="80" oninput="updatePreview()">
+          <div class="char-count"><span id="title-count">0</span>/80</div>
+        </div>
+
+        <div class="form-group">
+          <label>Description <span>*</span></label>
+          <textarea id="desc-input" placeholder="Décrivez votre produit : état, caractéristiques, raison de la vente, accessoires inclus..." maxlength="1000" oninput="updateCharCount()"></textarea>
+          <div class="char-count"><span id="desc-count">0</span>/1000</div>
+        </div>
+
+        <div class="form-group">
+          <label>État du produit</label>
+          <select>
+            <option>Neuf — jamais utilisé</option>
+            <option selected>Très bon état — légèrement utilisé</option>
+            <option>Bon état — quelques traces d'usure</option>
+            <option>État correct — défauts visibles</option>
+            <option>Pour pièces — ne fonctionne pas</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 2: PHOTOS -->
+    <div class="form-card" style="margin-bottom: 1.5rem;">
+      <div class="form-card-header">
+        <span style="font-size:1.2rem;">📷</span>
+        <h2>Photos du produit</h2>
+      </div>
+      <div class="form-card-body">
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1rem;">Les annonces avec photos reçoivent 5× plus de réponses. Ajoutez jusqu'à 8 photos.</p>
+
+        <label class="photo-upload-area" for="photo-input">
+          <input type="file" id="photo-input" accept="image/*" multiple onchange="handlePhotos(event)">
+          <div class="upload-icon">📁</div>
+          <div class="upload-title">Cliquez pour ajouter des photos</div>
+          <div class="upload-sub">JPEG, PNG · Max 5 Mo par photo · 8 photos max</div>
+        </label>
+
+        <div class="photo-previews" id="photo-grid">
+          <div class="photo-thumb">📷</div>
+          <div class="photo-thumb">📷</div>
+          <div class="photo-thumb">📷</div>
+          <div class="photo-thumb">📷</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 3: PRIX & LOCALISATION -->
+    <div class="form-card" style="margin-bottom: 1.5rem;">
+      <div class="form-card-header">
+        <span style="font-size:1.2rem;"></span>
+        <h2>Prix & Localisation</h2>
+      </div>
+      <div class="form-card-body">
+
+        <div class="form-group">
+          <label>Prix <span>*</span></label>
+          <div class="price-row">
+            <input type="number" id="price-input" placeholder="Ex: 150000" min="0" oninput="updatePreview()">
+            <label class="gratuit-toggle">
+              <input type="checkbox" id="gratuit-check" onchange="toggleGratuit()">
+              Gratuit / Don
+            </label>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="form-group">
+            <label>Ville <span>*</span></label>
+            <select>
+              <option>Abidjan</option>
+              <option>Dakar</option>
+              <option>Douala</option>
+              <option>Lomé</option>
+              <option>Cotonou</option>
+              <option>Bamako</option>
+              <option>Ouagadougou</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Quartier / Zone</label>
+            <input type="text" placeholder="Ex: Cocody, Plateau...">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION 4: CONTACT -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <span style="font-size:1.2rem;"></span>
+        <h2>Informations de contact</h2>
+      </div>
+      <div class="form-card-body">
+
+        <div class="form-group">
+          <label>Téléphone affiché sur l'annonce <span>*</span></label>
+          <input type="tel" placeholder="+228 00 00 00 00">
+        </div>
+
+        <div class="form-group">
+          <label>Modes de contact acceptés</label>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 400; cursor: pointer;">
+              <input type="checkbox" checked style="accent-color: var(--jaune);"> Appel téléphonique
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 400; cursor: pointer;">
+              <input type="checkbox" checked style="accent-color: var(--jaune);"> SMS / WhatsApp
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 400; cursor: pointer;">
+              <input type="checkbox" style="accent-color: var(--jaune);"> Email uniquement
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-submit" onclick="submitAnnonce()">
+             Publier l'annonce
+          </button>
+        </div>
+
+        <p style="text-align:center; color: var(--text-muted); font-size:0.8rem; margin-top:1rem;">
+          En publiant, vous acceptez les <a href="#" style="color:var(--jaune);">conditions d'utilisation</a>.
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PREVIEW -->
+  <div>
+    <div class="preview-box">
+      <div class="preview-header">👁 Aperçu de votre annonce</div>
+      <div class="preview-body">
+        <div class="preview-img" id="preview-img">📦</div>
+        <span class="preview-badge" id="preview-cat">Catégorie</span>
+        <div class="preview-title" id="preview-title">Titre de votre annonce</div>
+        <div class="preview-price" id="preview-price">— FCFA</div>
+        <div class="preview-info"> Ville · Aujourd'hui</div>
+      </div>
+    </div>
+
+    <div class="tips-box" style="margin-top: 1.2rem; background: var(--gris); border: 2px solid var(--gris-clair); border-radius: 14px; padding: 1.2rem;">
+      <h4> Conseils pour mieux vendre</h4>
+      <ul>
+        <li>Titre clair avec la marque et le modèle</li>
+        <li>Minimum 3 photos de qualité</li>
+        <li>Prix juste selon le marché local</li>
+        <li>Répondez rapidement aux messages</li>
+        <li>Précisez l'état et les défauts éventuels</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  © 2025 <a href="index.html">LocalMarket</a> · Tous droits réservés
+</footer>
+
+<script>
+  function updatePreview() {
+    const title = document.getElementById('title-input').value;
+    const price = document.getElementById('price-input').value;
+    const gratuit = document.getElementById('gratuit-check').checked;
+    const titleEl = document.getElementById('preview-title');
+    const priceEl = document.getElementById('preview-price');
+    const countEl = document.getElementById('title-count');
+
+    countEl.textContent = title.length;
+    titleEl.textContent = title || 'Titre de votre annonce';
+
+    if (gratuit) {
+      priceEl.textContent = 'GRATUIT';
+      priceEl.style.color = '#4CAF50';
+    } else if (price) {
+      priceEl.textContent = Number(price).toLocaleString('fr') + ' FCFA';
+      priceEl.style.color = 'var(--jaune)';
+    } else {
+      priceEl.textContent = '— FCFA';
+      priceEl.style.color = 'var(--jaune)';
+    }
+  }
+
+  function updateCharCount() {
+    const desc = document.getElementById('desc-input').value;
+    document.getElementById('desc-count').textContent = desc.length;
+  }
+
+  function toggleGratuit() {
+    const check = document.getElementById('gratuit-check').checked;
+    const priceInput = document.getElementById('price-input');
+    priceInput.disabled = check;
+    priceInput.style.opacity = check ? '0.4' : '1';
+    updatePreview();
+  }
+
+  function handlePhotos(event) {
+    const files = Array.from(event.target.files).slice(0, 8);
+    const grid = document.getElementById('photo-grid');
+    const previewImg = document.getElementById('preview-img');
+    grid.innerHTML = '';
+
+    files.forEach((file, i) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const div = document.createElement('div');
+        div.className = 'photo-thumb has-image';
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:6px;';
+        div.appendChild(img);
+        grid.appendChild(div);
+        if (i === 0) {
+          previewImg.innerHTML = '';
+          const pImg = document.createElement('img');
+          pImg.src = e.target.result;
+          pImg.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+          previewImg.appendChild(pImg);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Add empty slots
+    for (let i = files.length; i < 4; i++) {
+      const div = document.createElement('div');
+      div.className = 'photo-thumb';
+      div.textContent = '📷';
+      grid.appendChild(div);
+    }
+  }
+
+  document.getElementById('cat-select').addEventListener('change', function() {
+    const catEl = document.getElementById('preview-cat');
+    const val = this.value.replace(/^[^\s]+ /, '');
+    catEl.textContent = val || 'Catégorie';
+  });
+
+  function submitAnnonce() {
+    const title = document.getElementById('title-input').value.trim();
+    if (!title) {
+      alert(' Veuillez saisir un titre pour votre annonce.');
+      return;
+    }
+    const btn = document.querySelector('.btn-submit');
+    btn.textContent = ' Annonce publiée !';
+    btn.style.background = '#4CAF50';
+    setTimeout(() => {
+      alert(' Votre annonce a été publiée avec succès !');
+    }, 300);
+  }
+</script>
+
+</body>
+</html>

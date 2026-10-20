@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LocalMarket — Achetez & Vendez Près de Chez Vous</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --jaune: #FFD600;
+    --jaune-clair: #FFF176;
+    --noir: #0D0D0D;
+    --gris: #FFFFFF;
+    --gris-clair: #E0E0E0;
+    --blanc: #FAFAFA;
+    --text-muted: #888;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--blanc);
+    color: var(--noir);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--blanc);
+    border-bottom: 3px solid var(--jaune);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--jaune);
+    letter-spacing: 2px;
+    text-decoration: none;
+  }
+
+  .logo span { color: var(--noir); }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  nav ul a {
+    color: var(--noir);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+  }
+
+  nav ul a:hover { color: var(--jaune); }
+
+  .btn {
+    background: var(--jaune);
+    color: var(--noir);
+    padding: 0.6rem 1.4rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: inline-block;
+  }
+
+  .btn:hover { background: var(--jaune-clair); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--jaune);
+    border: 2px solid var(--jaune);
+    padding: 0.5rem 1.2rem;
+  }
+
+  .btn-outline:hover { background: var(--jaune); color: var(--noir); }
+
+  /* HERO */
+  .hero {
+    background: var(--blanc);
+    padding: 5rem 2rem;
+    text-align: center;
+    border-bottom: 3px solid var(--jaune);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 300px; height: 300px;
+    background: var(--jaune);
+    border-radius: 50%;
+    opacity: 0.05;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: var(--jaune);
+    border-radius: 50%;
+    opacity: 0.04;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+  }
+
+  .hero h1 span { color: var(--jaune); }
+
+  .hero p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* SEARCH BAR */
+  .search-bar {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    background: var(--gris-clair);
+    border: 2px solid var(--gris-clair);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .search-bar:focus-within { border-color: var(--jaune); }
+
+  .search-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    padding: 1rem 1.2rem;
+    color: var(--noir);
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+  }
+
+  .search-bar input::placeholder { color: var(--text-muted); }
+
+  .search-bar button {
+    background: var(--jaune);
+    color: var(--noir);
+    border: none;
+    padding: 0 1.5rem;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+  }
+
+  .search-bar button:hover { background: var(--jaune-clair); }
+
+  /* CATEGORIES */
+  .categories {
+    padding: 3rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--gris-clair);
+  }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+
+  .cat-card {
+    background: var(--gris);
+    border: 2px solid var(--gris-clair);
+    border-radius: 10px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--noir);
+    transition: border-color 0.2s, transform 0.2s;
+    display: block;
+  }
+
+  .cat-card:hover {
+    border-color: var(--jaune);
+    transform: translateY(-3px);
+  }
+
+  .cat-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .cat-name { font-weight: 600; font-size: 0.85rem; }
+  .cat-count { color: var(--text-muted); font-size: 0.78rem; margin-top: 0.2rem; }
+
+  /* ANNONCES */
+  .annonces-section {
+    padding: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .annonces-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .annonce-card {
+    background: var(--gris);
+    border: 2px solid var(--gris-clair);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--noir);
+    transition: border-color 0.2s, transform 0.2s;
+    display: block;
+  }
+
+  .annonce-card:hover {
+    border-color: var(--jaune);
+    transform: translateY(-4px);
+  }
+
+  .annonce-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: var(--gris-clair);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+  }
+
+  .annonce-body { padding: 1rem; }
+
+  .annonce-badge {
+    background: var(--jaune);
+    color: var(--noir);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .annonce-title {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .annonce-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: var(--jaune);
+    letter-spacing: 1px;
+  }
+
+  .annonce-price.gratuit { color: #4CAF50; }
+
+  .annonce-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--gris-clair);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .annonce-location::before { content: '📍 '; }
+
+  /* STATS */
+  .stats-bar {
+    background: var(--jaune);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .stat { text-align: center; }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--noir);
+    display: block;
+    letter-spacing: 1px;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--noir);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--gris);
+    border-top: 3px solid var(--jaune);
+  }
+
+  .cta-section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .cta-section h2 span { color: var(--jaune); }
+  .cta-section p { color: var(--text-muted); margin-bottom: 2rem; }
+
+  .btn-big {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    border-radius: 8px;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--gris);
+    border-top: 2px solid var(--gris-clair);
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  footer a { color: var(--jaune); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    nav ul li:not(:last-child):not(:first-child) { display: none; }
+    .stats-bar { gap: 2rem; }
+    .hero { padding: 3rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">Local<span>Market</span></a>
+  <ul>
+    <li><a href="annonces.html">Annonces</a></li>
+    <li><a href="publier.html">Publier</a></li>
+    <li><a href="connexion.html" class="btn btn-outline">Connexion</a></li>
+    <li><a href="inscription.html" class="btn">Inscription</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Achetez & Vendez<br><span>Près de Chez Vous</span></h1>
+  <p>La plateforme simple pour trouver de bonnes affaires dans votre quartier.</p>
+  <div class="search-bar">
+    <input type="text" placeholder="Que recherchez-vous ? Ex: iPhone, vélo, maison...">
+    <button>🔍 Chercher</button>
+  </div>
+  <a href="publier.html" class="btn btn-big">+ Publier une annonce gratuite</a>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-num">12 480</span>
+    <span class="stat-label">Annonces actives</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">8 300</span>
+    <span class="stat-label">Vendeurs inscrits</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">320</span>
+    <span class="stat-label">Villes couvertes</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">100%</span>
+    <span class="stat-label">Gratuit</span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories">
+  <h2 class="section-title">Catégories</h2>
+  <div class="cat-grid">
+    <a href="annonces.html" class="cat-card">
+      <div class="cat-icon">📱</div>
+      <div class="cat-name">Téléphones</div>
+      <div class="cat-count">1 240 annonces</div>
+    </a>
+    <a href="annonces.html" class="cat-card">
+      <div class="cat-icon">🏠</div>
+      <div class="cat-name">Immobilier</div>
+      <div class="cat-count">890 annonces</div>
+    </a>
+    <a href="annonces.html" class="cat-card">
+      <div class="cat-icon">🏍️</div>
+      <div class="cat-name">Motos</div>
+      <div class="cat-count">430 annonces</div>
+    </a>
+    <a href="annonces.html" class="cat-card">
+      <div class="cat-icon">💻</div>
+      <div class="cat-name">Informatique</div>
+      <div class="cat-count">670 annonces</div>
+    </a>
+    <a href="annonces.html" class="cat-card">
+      <div class="cat-icon">🚗</div>
+      <div class="cat-name">Voitures</div>
+      <div class="cat-count">980 annonces</div>
+    </a>
+    <a href="annonces.html" class="cat-card">
+      <div class="cat-icon">👔</div>
+      <div class="cat-name">Emploi</div>
+      <div class="cat-count">320 annonces</div>
+    </a>
+    <a href="annonces.html" class="cat-card">
+      <div class="cat-icon">🛋️</div>
+      <div class="cat-name">Meubles</div>
+      <div class="cat-count">540 annonces</div>
+    </a>
+    <a href="annonces.html" class="cat-card">
+      <div class="cat-icon">👗</div>
+      <div class="cat-name">Vêtements</div>
+      <div class="cat-count">1 100 annonces</div>
+    </a>
+  </div>
+</section>
+
+<!-- ANNONCES RECENTES -->
+<section class="annonces-section">
+  <h2 class="section-title">Annonces Récentes</h2>
+  <div class="annonces-grid">
+
+    <a href="annonce-detail.html" class="annonce-card">
+      <div class="annonce-img">📱</div>
+      <div class="annonce-body">
+        <span class="annonce-badge">Téléphone</span>
+        <div class="annonce-title">iPhone 13 — 128 Go, bleu</div>
+        <div class="annonce-price">350 000 FCFA</div>
+        <div class="annonce-footer">
+          <span class="annonce-location">Dakar</span>
+          <span>il y a 2h</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="annonce-detail.html" class="annonce-card">
+      <div class="annonce-img">🏍️</div>
+      <div class="annonce-body">
+        <span class="annonce-badge">Moto</span>
+        <div class="annonce-title">Yamaha FZ 150 — 2021</div>
+        <div class="annonce-price">1 200 000 FCFA</div>
+        <div class="annonce-footer">
+          <span class="annonce-location">Abidjan</span>
+          <span>il y a 5h</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="annonce-detail.html" class="annonce-card">
+      <div class="annonce-img">🏠</div>
+      <div class="annonce-body">
+        <span class="annonce-badge">Location</span>
+        <div class="annonce-title">Appartement F3, Plateau</div>
+        <div class="annonce-price">250 000 FCFA/mois</div>
+        <div class="annonce-footer">
+          <span class="annonce-location">Douala</span>
+          <span>hier</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="annonce-detail.html" class="annonce-card">
+      <div class="annonce-img">💻</div>
+      <div class="annonce-body">
+        <span class="annonce-badge">Informatique</span>
+        <div class="annonce-title">MacBook Air M1 — très bon état</div>
+        <div class="annonce-price">600 000 FCFA</div>
+        <div class="annonce-footer">
+          <span class="annonce-location">Lomé</span>
+          <span>hier</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="annonce-detail.html" class="annonce-card">
+      <div class="annonce-img">👔</div>
+      <div class="annonce-body">
+        <span class="annonce-badge">Emploi</span>
+        <div class="annonce-title">Cherche développeur web Junior</div>
+        <div class="annonce-price gratuit">Offre d'emploi</div>
+        <div class="annonce-footer">
+          <span class="annonce-location">Cotonou</span>
+          <span>il y a 3j</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="annonce-detail.html" class="annonce-card">
+      <div class="annonce-img">🛋️</div>
+      <div class="annonce-body">
+        <span class="annonce-badge">Meubles</span>
+        <div class="annonce-title">Canapé 3 places, cuir noir</div>
+        <div class="annonce-price">80 000 FCFA</div>
+        <div class="annonce-footer">
+          <span class="annonce-location">Dakar</span>
+          <span>il y a 4j</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <div style="text-align:center; margin-top: 2.5rem;">
+    <a href="annonces.html" class="btn btn-outline">Voir toutes les annonces →</a>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Prêt à <span>vendre</span> quelque chose ?</h2>
+  <p>Publiez votre première annonce gratuitement en moins de 2 minutes.</p>
+  <a href="publier.html" class="btn btn-big">Publier maintenant — C'est gratuit</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:0.5rem;">
+    <strong style="color:var(--jaune);">LocalMarket</strong> — Achetez & Vendez localement
+  </p>
+  <p>
+    <a href="#">À propos</a> · <a href="#">Contact</a> · <a href="#">Conditions</a> · <a href="#">Confidentialité</a>
+  </p>
+  <p style="margin-top:0.8rem;">© 2025 LocalMarket. Tous droits réservés.</p>
+</footer>
+
+</body>
+</html>

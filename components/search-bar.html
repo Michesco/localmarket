@@ -1,0 +1,125 @@
+<!--
+  ============================================
+  COMPOSANT : Barre de recherche
+  Usage : insérer où vous souhaitez une recherche
+  Variantes : grande (hero) ou compacte (navbar)
+  ============================================
+-->
+
+<!-- VARIANTE GRANDE (hero / page d'accueil) -->
+<div class="search-bar search-bar--lg">
+  <select class="search-bar__cat" id="search-cat">
+    <option value="">Toutes catégories</option>
+    <option value="telephones">📱 Téléphones</option>
+    <option value="immobilier">🏠 Immobilier</option>
+    <option value="motos">🏍️ Motos</option>
+    <option value="informatique">💻 Informatique</option>
+    <option value="voitures">🚗 Voitures</option>
+    <option value="emploi">👔 Emploi</option>
+    <option value="meubles">🛋️ Meubles</option>
+  </select>
+  <div class="search-bar__sep"></div>
+  <input
+    type="text"
+    class="search-bar__input"
+    id="search-input"
+    placeholder="Que recherchez-vous ? Ex: iPhone, vélo, maison..."
+    onkeydown="if(event.key==='Enter') doSearch()"
+  >
+  <button class="search-bar__btn" onclick="doSearch()">🔍 Rechercher</button>
+</div>
+
+<!--
+  VARIANTE COMPACTE (barre de résultats)
+  <div class="search-bar">
+    <input type="text" class="search-bar__input" placeholder="Rechercher...">
+    <button class="search-bar__btn">🔍</button>
+  </div>
+-->
+
+<style>
+/* --- SEARCH BAR STYLES --- */
+.search-bar {
+  display: flex;
+  background: var(--gris-clair);
+  border: 2px solid var(--gris-clair);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+  max-width: 680px;
+}
+.search-bar:focus-within { border-color: var(--jaune); }
+
+.search-bar--lg { border-radius: 12px; }
+
+.search-bar__cat {
+  width: auto;
+  min-width: 160px;
+  background: rgba(255,255,255,0.05);
+  border: none;
+  border-radius: 0;
+  padding: 0.9rem 1rem;
+  color: var(--blanc);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.88rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.search-bar__sep {
+  width: 1px;
+  background: rgba(255,255,255,0.1);
+  margin: 0.5rem 0;
+  flex-shrink: 0;
+}
+
+.search-bar__input {
+  flex: 1;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0.9rem 1.2rem;
+  color: var(--blanc);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  min-width: 0;
+}
+.search-bar__input::placeholder { color: var(--text-muted); }
+
+.search-bar__btn {
+  background: var(--jaune);
+  color: var(--noir);
+  border: none;
+  padding: 0 1.5rem;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.search-bar__btn:hover { background: var(--jaune-clair); }
+
+@media (max-width: 580px) {
+  .search-bar { flex-wrap: wrap; border-radius: 10px; }
+  .search-bar__cat { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .search-bar__sep { display: none; }
+  .search-bar__btn { width: 100%; padding: 0.85rem; }
+}
+</style>
+
+<script>
+function doSearch() {
+  const query = document.getElementById('search-input')?.value.trim();
+  const cat   = document.getElementById('search-cat')?.value;
+  if (!query && !cat) return;
+
+  const params = new URLSearchParams();
+  if (query) params.set('q', query);
+  if (cat)   params.set('cat', cat);
+
+  window.location.href = 'pages/annonces.html?' + params.toString();
+}
+</script>

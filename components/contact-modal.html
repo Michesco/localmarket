@@ -1,0 +1,250 @@
+<!--
+  ============================================
+  COMPOSANT : Modal "Contacter le vendeur"
+  Usage : ajouter ce bloc dans annonce-detail.html
+  Déclencher avec : openContactModal()
+  ============================================
+-->
+
+<!-- BOUTON DÉCLENCHEUR (à placer sur la page) -->
+<button class="btn btn-lg" onclick="openContactModal()">
+  💬 Contacter le vendeur
+</button>
+
+<!-- OVERLAY + MODAL -->
+<div class="modal-overlay" id="contact-modal" onclick="closeOnOverlay(event)">
+  <div class="modal">
+
+    <div class="modal__header">
+      <h2 class="modal__title">Contacter le vendeur</h2>
+      <button class="modal__close" onclick="closeContactModal()">✕</button>
+    </div>
+
+    <div class="modal__body">
+
+      <!-- Infos vendeur -->
+      <div class="modal__seller">
+        <div class="modal__seller-avatar">👤</div>
+        <div>
+          <div class="modal__seller-name" id="modal-seller-name">Moussa Diallo</div>
+          <div class="modal__seller-rating">⭐ 4.9 · Membre depuis 2023</div>
+        </div>
+      </div>
+
+      <!-- Annonce résumée -->
+      <div class="modal__annonce-recap" id="modal-annonce-recap">
+        <span class="badge badge-yellow">📱 Téléphone</span>
+        <strong>iPhone 13 Pro — 350 000 FCFA</strong>
+      </div>
+
+      <!-- Message -->
+      <div style="margin-bottom:1rem;">
+        <label for="modal-message">Votre message <span style="color:var(--jaune)">*</span></label>
+        <textarea id="modal-message" rows="4" placeholder="Bonjour, votre annonce m'intéresse. Est-il toujours disponible ?"></textarea>
+      </div>
+
+      <!-- Messages rapides -->
+      <div class="modal__quick-msgs">
+        <button class="quick-msg" onclick="setModalMsg('Bonjour, est-il toujours disponible ?')">Toujours dispo ?</button>
+        <button class="quick-msg" onclick="setModalMsg('Quel est votre prix final ?')">Prix final ?</button>
+        <button class="quick-msg" onclick="setModalMsg('Livraison possible ?')">Livraison ?</button>
+        <button class="quick-msg" onclick="setModalMsg('Je suis intéressé(e), quand se rencontrer ?')">Se rencontrer ?</button>
+      </div>
+
+      <!-- Coordonnées -->
+      <div style="margin-bottom:1rem;">
+        <label for="modal-phone">Votre téléphone (optionnel)</label>
+        <input type="tel" id="modal-phone" placeholder="+221 77 000 00 00">
+      </div>
+
+      <div class="modal__actions">
+        <button class="btn" style="flex:1;" onclick="sendContactMessage()">📨 Envoyer le message</button>
+      </div>
+
+      <div class="modal__alt-contact">
+        <span>ou contactez directement :</span>
+        <button class="modal__wa-btn" onclick="openWhatsApp()">📲 WhatsApp</button>
+        <button class="modal__call-btn" onclick="callSeller()">📞 Appeler</button>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<style>
+/* --- MODAL STYLES --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  background: var(--gris);
+  border: 2px solid var(--jaune);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  transform: translateY(20px);
+  transition: transform 0.25s;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+
+.modal__header {
+  background: var(--jaune);
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal__title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  color: var(--noir);
+  letter-spacing: 1px;
+}
+.modal__close {
+  background: rgba(0,0,0,0.15);
+  border: none;
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--noir);
+  font-weight: 700;
+  transition: background 0.2s;
+}
+.modal__close:hover { background: rgba(0,0,0,0.3); }
+
+.modal__body { padding: 1.5rem; }
+
+.modal__seller {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--gris-clair);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+}
+.modal__seller-avatar { font-size: 1.8rem; }
+.modal__seller-name   { font-weight: 700; font-size: 0.95rem; }
+.modal__seller-rating { color: var(--text-muted); font-size: 0.8rem; }
+
+.modal__annonce-recap {
+  background: rgba(255,214,0,0.07);
+  border: 1px solid rgba(255,214,0,0.2);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.88rem;
+}
+
+.modal__quick-msgs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.quick-msg {
+  background: var(--gris-clair);
+  border: 1px solid var(--gris-clair);
+  border-radius: 20px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  color: var(--blanc);
+  font-family: 'Outfit', sans-serif;
+  transition: border-color 0.2s;
+}
+.quick-msg:hover { border-color: var(--jaune); color: var(--jaune); }
+
+.modal__actions { display: flex; gap: 0.8rem; margin-bottom: 1rem; }
+
+.modal__alt-contact {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  border-top: 1px solid var(--gris-clair);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+.modal__wa-btn {
+  background: #25D366; color: white; border: none;
+  border-radius: 6px; padding: 0.4rem 0.9rem;
+  font-family: 'Outfit', sans-serif; font-weight: 600;
+  font-size: 0.82rem; cursor: pointer; transition: background 0.2s;
+}
+.modal__wa-btn:hover { background: #20bc5a; }
+.modal__call-btn {
+  background: var(--gris-clair); color: var(--blanc); border: none;
+  border-radius: 6px; padding: 0.4rem 0.9rem;
+  font-family: 'Outfit', sans-serif; font-weight: 600;
+  font-size: 0.82rem; cursor: pointer;
+}
+</style>
+
+<script>
+const SELLER_PHONE = '+221770000000'; // ← à remplacer dynamiquement
+
+function openContactModal()  {
+  document.getElementById('contact-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeContactModal() {
+  document.getElementById('contact-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeOnOverlay(e) {
+  if (e.target === document.getElementById('contact-modal')) closeContactModal();
+}
+
+function setModalMsg(text) {
+  document.getElementById('modal-message').value = text;
+}
+
+function sendContactMessage() {
+  const msg = document.getElementById('modal-message').value.trim();
+  if (!msg) {
+    document.getElementById('modal-message').style.borderColor = 'var(--rouge)';
+    return;
+  }
+  // Ici : envoyer via fetch() à backend/php/messages.php
+  closeContactModal();
+  showAlert('✅ Message envoyé ! Le vendeur vous répondra bientôt.', 'success');
+}
+
+function openWhatsApp() {
+  const msg = document.getElementById('modal-message').value || "Bonjour, votre annonce m'intéresse.";
+  window.open(`https://wa.me/${SELLER_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function callSeller() {
+  window.location.href = 'tel:' + SELLER_PHONE;
+}
+
+// Fermer avec Échap
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeContactModal();
+});
+</script>

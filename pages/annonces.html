@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toutes les annonces — LocalMarket</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/main.css">
+<link rel="stylesheet" href="../assets/css/navbar.css">
+<style>
+  .page-header {
+    background: var(--gris);
+    border-bottom: 3px solid var(--jaune);
+    padding: 2rem;
+  }
+  .page-header h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+  .page-header h1 span { color: var(--jaune); }
+
+  .search-bar {
+    display: flex;
+    max-width: 600px;
+    background: var(--gris-clair);
+    border: 2px solid var(--gris-clair);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .search-bar:focus-within { border-color: var(--jaune); }
+  .search-bar input { flex:1; background:none; border:none; outline:none; padding:0.9rem 1.2rem; color:var(--blanc); font-family:'Outfit',sans-serif; font-size:0.95rem; }
+  .search-bar input::placeholder { color:var(--text-muted); }
+  .search-bar button { background:var(--jaune); color:var(--noir); border:none; padding:0 1.4rem; font-weight:700; font-family:'Outfit',sans-serif; cursor:pointer; font-size:0.95rem; }
+  .search-bar button:hover { background:var(--jaune-clair); }
+
+  .annonces-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    align-items: start;
+  }
+  @media(max-width:700px){ .annonces-layout { grid-template-columns:1fr; } .filters-panel { display:none; } }
+
+  /* FILTERS */
+  .filters-panel { background:var(--gris); border:2px solid var(--gris-clair); border-radius:12px; padding:1.2rem; position:sticky; top:90px; }
+  .filter-title { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; letter-spacing:1px; margin-bottom:1rem; color:var(--jaune); }
+  .filter-group { margin-bottom:1.5rem; }
+  .filter-group label { font-size:0.82rem; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted); margin-bottom:0.7rem; }
+  .filter-option { display:flex; align-items:center; gap:0.6rem; padding:0.4rem 0; cursor:pointer; font-size:0.88rem; }
+  .filter-option input { width:16px; height:16px; accent-color:var(--jaune); flex-shrink:0; }
+  .filter-option span { color:var(--text-muted); font-size:0.78rem; margin-left:auto; }
+  .price-inputs { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-top:0.5rem; }
+  .price-inputs input { padding:0.5rem 0.7rem; font-size:0.85rem; }
+  .btn-apply { width:100%; margin-top:0.5rem; }
+
+  /* GRID */
+  .results-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem; flex-wrap:wrap; gap:0.8rem; }
+  .results-count { font-size:0.9rem; color:var(--text-muted); }
+  .results-count strong { color:var(--blanc); }
+  .sort-select { background:var(--gris-clair); border:2px solid var(--gris-clair); border-radius:8px; padding:0.5rem 0.8rem; color:var(--blanc); font-family:'Outfit',sans-serif; font-size:0.85rem; width:auto; cursor:pointer; }
+  .sort-select:focus { border-color:var(--jaune); }
+
+  .annonces-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:1.2rem; }
+
+  .annonce-card { background:var(--gris); border:2px solid var(--gris-clair); border-radius:12px; overflow:hidden; display:block; color:var(--blanc); text-decoration:none; transition:border-color 0.2s, transform 0.2s; }
+  .annonce-card:hover { border-color:var(--jaune); transform:translateY(-4px); }
+  .annonce-img { width:100%; height:170px; display:flex; align-items:center; justify-content:center; background:var(--gris-clair); font-size:3rem; }
+  .annonce-body { padding:1rem; }
+  .annonce-badge { background:var(--jaune); color:var(--noir); font-size:0.7rem; font-weight:700; padding:0.2rem 0.6rem; border-radius:4px; display:inline-block; margin-bottom:0.5rem; text-transform:uppercase; }
+  .annonce-title { font-weight:600; font-size:0.95rem; margin-bottom:0.3rem; }
+  .annonce-price { font-family:'Bebas Neue',sans-serif; font-size:1.35rem; color:var(--jaune); letter-spacing:1px; }
+  .annonce-footer { display:flex; justify-content:space-between; align-items:center; margin-top:0.7rem; padding-top:0.7rem; border-top:1px solid var(--gris-clair); font-size:0.75rem; color:var(--text-muted); }
+
+  /* PAGINATION */
+  .pagination { display:flex; justify-content:center; gap:0.5rem; margin:2.5rem 0; flex-wrap:wrap; }
+  .page-btn { width:38px; height:38px; background:var(--gris); border:2px solid var(--gris-clair); border-radius:8px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.9rem; font-family:'Outfit',sans-serif; color:var(--blanc); transition:all 0.2s; }
+  .page-btn:hover { border-color:var(--jaune); color:var(--jaune); }
+  .page-btn.active { background:var(--jaune); color:var(--noir); border-color:var(--jaune); font-weight:700; }
+
+  footer { background:#080808; border-top:1px solid var(--gris-clair); padding:1.2rem; text-align:center; color:var(--text-muted); font-size:0.8rem; }
+  footer a { color:var(--jaune); }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="../index.html" class="navbar-logo">Local<span>Market</span></a>
+  <button class="navbar-toggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="navbar-menu">
+    <li><a href="annonces.html">Annonces</a></li>
+    <li><a href="publier.html">Publier</a></li>
+    <li><a href="connexion.html" class="btn btn-outline">Connexion</a></li>
+    <li><a href="inscription.html" class="btn">Inscription</a></li>
+  </ul>
+</nav>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="container">
+    <h1><span>Toutes</span> les annonces</h1>
+    <div class="search-bar">
+      <input type="text" placeholder="Rechercher un produit, une marque..." id="search-input">
+      <button onclick="doSearch()"> Rechercher</button>
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="annonces-layout">
+
+  <!-- FILTRES -->
+  <aside class="filters-panel">
+    <div class="filter-title"> Filtres</div>
+
+    <div class="filter-group">
+      <label>Catégorie</label>
+      <div class="filter-option"><input type="checkbox" checked> Tous <span>12 480</span></div>
+      <div class="filter-option"><input type="checkbox"> 📱 Téléphones <span>1 240</span></div>
+      <div class="filter-option"><input type="checkbox"> 🏠 Immobilier <span>890</span></div>
+      <div class="filter-option"><input type="checkbox"> 🏍️ Motos <span>430</span></div>
+      <div class="filter-option"><input type="checkbox"> 💻 Informatique <span>670</span></div>
+      <div class="filter-option"><input type="checkbox"> 🚗 Voitures <span>980</span></div>
+      <div class="filter-option"><input type="checkbox"> 👔 Emploi <span>320</span></div>
+    </div>
+
+    <div class="filter-group">
+      <label>Prix (FCFA)</label>
+      <div class="price-inputs">
+        <input type="number" placeholder="Min">
+        <input type="number" placeholder="Max">
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <label>État</label>
+      <div class="filter-option"><input type="checkbox" checked> Tous</div>
+      <div class="filter-option"><input type="checkbox"> Neuf</div>
+      <div class="filter-option"><input type="checkbox"> Très bon état</div>
+      <div class="filter-option"><input type="checkbox"> Bon état</div>
+    </div>
+
+    <div class="filter-group">
+      <label>Ville</label>
+      <select style="padding:0.5rem 0.8rem; font-size:0.85rem;">
+        <option>Toutes les villes</option>
+        <option>Abidjan</option>
+        <option>Dakar</option>
+        <option>Douala</option>
+        <option>Lomé</option>
+        <option>Cotonou</option>
+      </select>
+    </div>
+
+    <button class="btn btn-apply">Appliquer les filtres</button>
+  </aside>
+
+  <!-- LISTE -->
+  <div>
+    <div class="results-header">
+      <div class="results-count"><strong>12 480</strong> annonces trouvées</div>
+      <select class="sort-select">
+        <option> Plus récentes</option>
+        <option> Prix croissant</option>
+        <option> Prix décroissant</option>
+        <option> Plus vues</option>
+      </select>
+    </div>
+
+    <div class="annonces-grid">
+      <a href="annonce-detail.html" class="annonce-card">
+        <div class="annonce-img"></div>
+        <div class="annonce-body">
+          <span class="annonce-badge">Téléphone</span>
+          <div class="annonce-title">iPhone 13 Pro 256 Go</div>
+          <div class="annonce-price">350 000 FCFA</div>
+          <div class="annonce-footer"><span> Dakar</span><span>2h</span></div>
+        </div>
+      </a>
+      <a href="annonce-detail.html" class="annonce-card">
+        <div class="annonce-img"></div>
+        <div class="annonce-body">
+          <span class="annonce-badge">Moto</span>
+          <div class="annonce-title">Yamaha FZ 150 — 2021</div>
+          <div class="annonce-price">1 200 000 FCFA</div>
+          <div class="annonce-footer"><span> Abidjan</span><span>5h</span></div>
+        </div>
+      </a>
+      <a href="annonce-detail.html" class="annonce-card">
+        <div class="annonce-img"></div>
+        <div class="annonce-body">
+          <span class="annonce-badge">Location</span>
+          <div class="annonce-title">Appartement F3, Plateau</div>
+          <div class="annonce-price">250 000 FCFA/mois</div>
+          <div class="annonce-footer"><span> Douala</span><span>hier</span></div>
+        </div>
+      </a>
+      <a href="annonce-detail.html" class="annonce-card">
+        <div class="annonce-img">💻</div>
+        <div class="annonce-body">
+          <span class="annonce-badge">Informatique</span>
+          <div class="annonce-title">MacBook Air M1</div>
+          <div class="annonce-price">600 000 FCFA</div>
+          <div class="annonce-footer"><span> Lomé</span><span>hier</span></div>
+        </div>
+      </a>
+      <a href="annonce-detail.html" class="annonce-card">
+        <div class="annonce-img"></div>
+        <div class="annonce-body">
+          <span class="annonce-badge">Voiture</span>
+          <div class="annonce-title">Toyota Corolla 2019</div>
+          <div class="annonce-price">8 500 000 FCFA</div>
+          <div class="annonce-footer"><span> Abidjan</span><span>2j</span></div>
+        </div>
+      </a>
+      <a href="annonce-detail.html" class="annonce-card">
+        <div class="annonce-img"></div>
+        <div class="annonce-body">
+          <span class="annonce-badge">Meubles</span>
+          <div class="annonce-title">Canapé 3 places cuir noir</div>
+          <div class="annonce-price">80 000 FCFA</div>
+          <div class="annonce-footer"><span> Dakar</span><span>4j</span></div>
+        </div>
+      </a>
+      <a href="annonce-detail.html" class="annonce-card">
+        <div class="annonce-img">👔</div>
+        <div class="annonce-body">
+          <span class="annonce-badge">Emploi</span>
+          <div class="annonce-title">Développeur web Junior</div>
+          <div class="annonce-price" style="color:#4CAF50;">Offre d'emploi</div>
+          <div class="annonce-footer"><span> Cotonou</span><span>3j</span></div>
+        </div>
+      </a>
+      <a href="annonce-detail.html" class="annonce-card">
+        <div class="annonce-img"></div>
+        <div class="annonce-body">
+          <span class="annonce-badge">Jeux</span>
+          <div class="annonce-title">PlayStation 5 + 2 manettes</div>
+          <div class="annonce-price">450 000 FCFA</div>
+          <div class="annonce-footer"><span>📍 Dakar</span><span>5j</span></div>
+        </div>
+      </a>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+      <div class="page-btn active">1</div>
+      <div class="page-btn">2</div>
+      <div class="page-btn">3</div>
+      <div class="page-btn">4</div>
+      <div class="page-btn">5</div>
+      <div class="page-btn">→</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  © 2025 <a href="../index.html">LocalMarket</a> · Tous droits réservés
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script>
+  function doSearch() {
+    const q = document.getElementById('search-input').value.trim();
+    if (q) alert(`🔍 Recherche : "${q}"`);
+  }
+  document.getElementById('search-input').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') doSearch();
+  });
+</script>
+</body>
+</html>
